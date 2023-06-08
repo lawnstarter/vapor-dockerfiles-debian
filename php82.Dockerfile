@@ -1,60 +1,38 @@
-FROM --platform=linux/amd64 php:8.2-fpm-alpine
+FROM --platform=linux/amd64 php:8.2-fpm-buster
 
-RUN apk --update add \
-    wget \
-    curl \
-    build-base \
-    libmcrypt-dev \
-    libxml2-dev \
-    pcre-dev \
-    zlib-dev \
-    autoconf \
-    oniguruma-dev \
-    openssl \
-    openssl-dev \
-    freetype-dev \
-    libjpeg-turbo-dev \
-    jpeg-dev \
-    libpng-dev \
-    imagemagick-dev \
-    imagemagick \
-    postgresql-dev \
-    libzip-dev \
-    gettext-dev \
-    libxslt-dev \
-    libgcrypt-dev &&\
-    rm /var/cache/apk/*
+# Install `docker-php-ext-install` helper to ease installation of PHP
+# extensions
+#
+# Ref: https://github.com/mlocati/docker-php-extension-installer
+ENV PHP_EXT_INSTALLER_VERSION=2.1.28
 
-RUN pecl channel-update pecl.php.net && \
-    pecl install mcrypt redis-5.3.7 && \
-    rm -rf /tmp/pear
+RUN set -eux; \
+      curl --fail -Lo /usr/local/bin/install-php-extensions \
+        https://github.com/mlocati/docker-php-extension-installer/releases/download/${PHP_EXT_INSTALLER_VERSION}/install-php-extensions; \
+      chmod +x /usr/local/bin/install-php-extensions
 
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+# Install common PHP extensions (using `install-php-extensions`)
+# (no need to install mbstring, pdo, tokenizer or xml as they are already part of base image)
+RUN set -eux; \
+      install-php-extensions \
+        bcmath \
+        exif \
+        gd \
+        gettext \
+        intl \
+        mcrypt \
+        mysqli \
+        pcntl \
+        pdo_mysql \
+        pdo_pgsql \
+        redis-5.3.7 \
+        soap \
+        sockets \
+        xsl \
+        zip \
+      ;
 
-RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions sockets
-
-RUN docker-php-ext-install \
-    mysqli \
-    mbstring \
-    pdo \
-    pdo_mysql \
-    xml \
-    pcntl \
-    bcmath \
-    pdo_pgsql \
-    zip \
-    intl \
-    gettext \
-    soap \
-    xsl
-
-RUN docker-php-ext-configure gd --with-freetype=/usr/lib/ --with-jpeg=/usr/lib/ && \
-    docker-php-ext-install gd
-
-RUN docker-php-ext-enable redis
-
-RUN cp "/etc/ssl/cert.pem" /opt/cert.pem
+RUN cp "/etc/ssl/certs/ca-certificates.crt" /opt/cert.pem
 
 COPY runtime/bootstrap /opt/bootstrap
 COPY runtime/bootstrap.php /opt/bootstrap.php
@@ -65,4 +43,5 @@ RUN chmod 755 /opt/bootstrap.php
 
 ENTRYPOINT []
 
-CMD /opt/bootstrap
+CMD ["/opt/bootstrap"]
+
