@@ -8,5 +8,5 @@ docker buildx build -f ${PWD}/${PHP_VERSION}.Dockerfile -t vapor-buster-${PHP_VE
 docker tag vapor-buster-${PHP_VERSION}:latest melbach/vapor-buster:${PHP_VERSION}
 
 if [ -n "$PUBLISH" ]; then
-  docker push melba-ch/vapor-buster:${PHP_VERSION}
+  docker push melbach/vapor-buster:${PHP_VERSION}
 fi
