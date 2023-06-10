@@ -6,7 +6,7 @@ The Dockerfile in this repository has been customized to use the [PHP Buster](ht
 
 # Usage
 
-**environement.Dockerfile**
+** environment.Dockerfile**
 ```
 FROM melbach/vapor-buster:php82
 
