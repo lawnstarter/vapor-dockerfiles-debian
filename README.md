@@ -8,7 +8,7 @@ The Dockerfile in this repository has been customized to use the [PHP Buster](ht
 
 **environment.Dockerfile**
 ```
-FROM melbach/vapor-buster:php82
+FROM melbach/vapor-bullseye:php83
 
 RUN apt-get update && apt-get install -y \
     default-mysql-client && \
