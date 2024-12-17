@@ -20,7 +20,6 @@ RUN set -eux; \
         gd \
         gettext \
         intl \
-        mcrypt \
         mysqli \
         pcntl \
         pdo_mysql \
