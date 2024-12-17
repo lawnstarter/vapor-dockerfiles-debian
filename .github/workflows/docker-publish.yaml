@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: 'lawnstarter/vapor-debian'
 
 jobs:
   build-and-push:
@@ -28,7 +28,7 @@ jobs:
           - php-version: '8.4'
             dockerfile: 'php84.Dockerfile'
             image-suffix: '-php8.4'
-    
+
     permissions:
       contents: read
       packages: write
