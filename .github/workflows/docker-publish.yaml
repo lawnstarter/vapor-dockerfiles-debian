@@ -5,6 +5,8 @@ on:
     branches: [ "main" ]
     tags: [ 'v*.*.*' ]
   workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *' # Nightly at 6:00 AM UTC
 
 env:
   REGISTRY: ghcr.io
